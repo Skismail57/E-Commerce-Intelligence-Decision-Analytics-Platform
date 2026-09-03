@@ -30,7 +30,6 @@ gunicorn==22.0.0
 prophet==1.1.5
 pmdarima==2.0.4
 
-isolation-forest==0.2.0
 pyod==2.0.1
 
 joblib==1.4.2
