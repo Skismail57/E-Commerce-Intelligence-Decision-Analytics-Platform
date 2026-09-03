@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
     
@@ -34,7 +34,7 @@ jobs:
     
     - name: Upload coverage
       if: always()
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         file: ./coverage.xml
         fail_ci_if_error: false
@@ -45,13 +45,13 @@ jobs:
     if: success()
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      uses: docker/setup-buildx-action@v3
     
     - name: Build Docker image
-      uses: docker/build-push-action@v4
+      uses: docker/build-push-action@v5
       with:
         context: .
         file: ./docker/Dockerfile
@@ -59,7 +59,7 @@ jobs:
         tags: ecommerce-intelligence:latest
     
     - name: Build PostgreSQL image
-      uses: docker/build-push-action@v4
+      uses: docker/build-push-action@v5
       with:
         context: .
         file: ./docker/Dockerfile.postgres
@@ -72,7 +72,7 @@ jobs:
     if: github.ref == 'refs/heads/main' && success()
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Deploy to production
       run: |
