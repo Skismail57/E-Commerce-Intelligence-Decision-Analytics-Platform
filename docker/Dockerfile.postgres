@@ -1,0 +1,11 @@
+FROM postgres:16-alpine
+
+ENV POSTGRES_DB=ecommerce_warehouse
+ENV POSTGRES_USER=ecommerce_user
+ENV POSTGRES_PASSWORD=ecommerce_pass
+
+COPY sql/staging/001_create_schema.sql /docker-entrypoint-initdb.d/001_create_schema.sql
+
+EXPOSE 5432
+
+CMD ["postgres"]
