@@ -22,7 +22,7 @@ python-dotenv==1.0.1
 pydantic-settings==2.3.4
 
 streamlit==1.37.0
-streamlit-plotly-events==0.0.8
+streamlit-plotly-events==0.0.6
 
 fastapi==0.111.1
 uvicorn[standard]==0.30.3
