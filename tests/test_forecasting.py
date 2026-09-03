@@ -49,7 +49,7 @@ class TestDemandForecaster:
         """Create DemandForecaster instance with temp directory"""
         return DemandForecaster(data_dir=tmp_path, processed_dir=tmp_path)
     
-    def test_initialization(self, demand_forecaster):
+    def test_initialization(self, demand_forecaster, tmp_path):
         """Test DemandForecaster initialization"""
         assert demand_forecaster is not None
         assert demand_forecaster.data_dir == tmp_path

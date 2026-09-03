@@ -275,14 +275,34 @@ class CLVPredictor:
         recency = rfm_data["recency"].values
         T = rfm_data["T"].values
         
-        # Calculate p_alive using BG/NBD formula
+        # Calculate p_alive using BG/NBD formula with log-space to avoid overflow
         # P(alive) = 1 / (1 + (a / (b + frequency)) * ((alpha + T) / (alpha + recency))^(r + frequency))
         
-        numerator = (alpha + T) ** (r + frequency)
-        denominator = (alpha + recency) ** (r + frequency)
-        ratio = numerator / denominator
+        exponent = r + frequency
         
-        p_alive = 1 / (1 + (a / (b + frequency)) * ratio)
+        log_ratio = exponent * (
+            np.log(np.maximum(alpha + T, 1e-12))
+            - np.log(np.maximum(alpha + recency, 1e-12))
+        )
+        
+        log_odds = (
+            np.log(max(a, 1e-12))
+            - np.log(np.maximum(b + frequency, 1e-12))
+            + log_ratio
+        )
+        
+        p_alive = 1.0 / (
+            1.0 + np.exp(np.clip(log_odds, -700, 700))
+        )
+        
+        p_alive = np.nan_to_num(
+            p_alive,
+            nan=0.0,
+            posinf=1.0,
+            neginf=0.0
+        )
+        
+        p_alive = np.clip(p_alive, 0.0, 1.0)
         
         return pd.Series(p_alive, index=rfm_data["customer_id"])
     
@@ -313,19 +333,43 @@ class CLVPredictor:
         recency = rfm_data["recency"].values
         T = rfm_data["T"].values
         
-        # Calculate expected transactions using BG/NBD formula
+        # Calculate expected transactions using BG/NBD formula with log-space to avoid overflow
         # E(Y(t)) = (a + b) / (a - 1) * (1 - ((alpha + T) / (alpha + T + t))^(r + frequency) * (b + frequency) / (a + b + frequency))
         
         t = prediction_period
         term1 = (a + b) / (a - 1) if a > 1 else 0
         
-        term2_numerator = (alpha + T) ** (r + frequency)
-        term2_denominator = (alpha + T + t) ** (r + frequency)
-        term2 = term2_numerator / term2_denominator
+        exponent = r + frequency
         
-        term3 = (b + frequency) / (a + b + frequency)
+        log_term2 = exponent * (
+            np.log(np.maximum(alpha + T, 1e-12))
+            - np.log(np.maximum(alpha + T + t, 1e-12))
+        )
         
-        expected_transactions = term1 * (1 - term2 * term3)
+        term2 = np.exp(
+            np.clip(log_term2, -700, 700)
+        )
+        
+        term3 = (
+            (b + frequency)
+            / np.maximum(a + b + frequency, 1e-12)
+        )
+        
+        expected_transactions = (
+            term1 * (1.0 - term2 * term3)
+        )
+        
+        expected_transactions = np.nan_to_num(
+            expected_transactions,
+            nan=0.0,
+            posinf=0.0,
+            neginf=0.0
+        )
+        
+        expected_transactions = np.maximum(
+            expected_transactions,
+            0.0
+        )
         
         return pd.Series(expected_transactions, index=rfm_data["customer_id"])
     

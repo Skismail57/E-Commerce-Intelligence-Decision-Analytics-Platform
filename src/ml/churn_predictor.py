@@ -178,6 +178,10 @@ class ChurnPredictor:
             "importance": np.linspace(1.0, 0.1, max(len(numeric), 1)) / max(len(numeric), 1),
         }).sort_values("importance", ascending=False).reset_index(drop=True)
 
+    def predict(self, churn_df: Optional[pd.DataFrame] = None) -> pd.DataFrame:
+        """Backward-compatible alias for predict_proba."""
+        return self.predict_proba(churn_df)
+
     def predict_proba(self, churn_df: Optional[pd.DataFrame] = None) -> pd.DataFrame:
         """Return churn probabilities + risk tier + top-3 risk driver columns for each customer."""
         df = churn_df if churn_df is not None else self._load_churn_features()

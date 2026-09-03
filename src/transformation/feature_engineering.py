@@ -395,10 +395,27 @@ class FeatureEngineer:
             0.0,
         )
 
-        product_info = products_df[[
-            "product_id", "product_name", "category_id", "supplier_id",
-            "selling_price", "launch_date", "product_status",
-        ]].merge(categories_df, on="category_id", how="left")
+        product_info_cols = [
+            "product_id",
+            "product_name",
+            "category_id",
+            "supplier_id",
+            "selling_price",
+            "launch_date",
+        ]
+
+        product_info = products_df[product_info_cols].copy()
+
+        if "product_status" in products_df.columns:
+            product_info["product_status"] = products_df["product_status"].values
+        else:
+            product_info["product_status"] = "Active"
+
+        product_info = product_info.merge(
+            categories_df,
+            on="category_id",
+            how="left"
+        )
 
         result = product_info.merge(per_product, on="product_id", how="left")
         for c in ["units_sold", "revenue_inr", "cogs", "profit_inr"]:

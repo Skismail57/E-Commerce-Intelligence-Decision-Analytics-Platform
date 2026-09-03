@@ -73,7 +73,7 @@ class StatisticalAnalyzer:
         elif method == "zscore":
             z = np.abs(zscore(s))
             t = threshold or 3.0
-            outlier_mask = z > t
+            outlier_mask = pd.Series(z > t, index=s.index, dtype=bool)
         elif method == "mad":
             median = s.median()
             mad = np.median(np.abs(s - median))

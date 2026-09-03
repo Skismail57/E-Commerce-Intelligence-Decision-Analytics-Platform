@@ -72,6 +72,8 @@ class TestCLVPredictor:
     
     def test_compute_rfm_data(self, clv_predictor, sample_orders):
         """Test RFM data computation"""
+        clv_predictor._dfs["orders"] = sample_orders
+
         rfm_data = clv_predictor.compute_rfm_data()
         
         assert 'customer_id' in rfm_data.columns

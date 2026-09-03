@@ -410,7 +410,7 @@ Parallel Trends Test:
         report += "\nPropensity Score Diagnostics:\n"
         if 'propensity' in diagnostics:
             prop = diagnostics['propensity']
-            report += f"- Propensity Overlap: {prop.get('propensity_overlap', 0):.%\n"
+            report += f"- Propensity Overlap: {prop.get('propensity_overlap', 0):.2%}\n"
             report += f"- Standardized Mean Difference: {prop.get('standardized_mean_difference', 0):.4f}\n"
             report += f"- Good Balance: {prop.get('good_balance', False)}\n"
             report += f"- Interpretation: {prop.get('interpretation', 'N/A')}\n"
