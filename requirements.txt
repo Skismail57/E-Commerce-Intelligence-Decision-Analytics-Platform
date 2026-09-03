@@ -46,7 +46,6 @@ faker==26.0.0
 
 mlflow==2.14.3
 lifelines==0.27.8
-causalml==0.12.0
 transformers==4.41.2
 torch==2.3.1
 ruptures==1.1.0
